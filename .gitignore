@@ -1,0 +1,8 @@
+.dart_tool/
+build/
+functions/node_modules/
+functions/lib/
+.firebase/
+*.log
+android/app/google-services.json
+lib/firebase_options.dart

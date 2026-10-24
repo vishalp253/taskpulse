@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+
+    match /users/{uid} {
+      allow read, write: if isOwner(uid);
+
+      // Devices: a client may write only its own device docs; push tokens live here.
+      match /user_devices/{deviceId} {
+        allow read, write: if isOwner(uid);
+      }
+    }
+
+    // Tasks carry ownerId so one collection query can serve the scheduler.
+    match /tasks/{taskId} {
+      allow read: if signedIn() && resource.data.ownerId == request.auth.uid;
+      allow create: if signedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow update: if signedIn() && resource.data.ownerId == request.auth.uid
+                    && request.resource.data.ownerId == resource.data.ownerId;
+      allow delete: if signedIn() && resource.data.ownerId == request.auth.uid;
+    }
+
+    // Scheduler-owned delivery receipts. Clients must never forge scheduler state.
+    match /notificationReceipts/{receiptId} {
+      allow read, write: if false;
+    }
+
+    // schedules_templates: ownerId == 'system' marks built-in read-only templates.
+    match /schedules_templates/{templateId} {
+      allow read: if signedIn() &&
+        (resource.data.ownerId == request.auth.uid || resource.data.ownerId == 'system');
+      allow create: if signedIn() && request.resource.data.ownerId == request.auth.uid;
+      allow update, delete: if signedIn() && resource.data.ownerId == request.auth.uid;
+    }
+  }
+}

@@ -1,0 +1,48 @@
+name: taskpulse
+description: Cross-device task alerts with sticky desktop overlay, quick-add hotkey and routine templates.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+  flutter: '>=3.22.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.5.1
+
+  # Firebase (messaging is Android-only; Windows uses Firestore listeners)
+  firebase_core: ^5.0.0
+  firebase_auth: ^7.0.0
+  cloud_firestore: ^7.0.0
+  firebase_messaging: ^17.0.0
+
+  # Notifications and deep links
+  flutter_local_notifications: ^17.2.3
+  url_launcher: ^6.3.0
+
+  # Desktop (Windows) only features
+  window_manager: ^0.4.3
+  hotkey_manager: ^0.2.3
+  system_tray: ^2.0.3
+  win_toast: ^0.4.0
+
+  # Utilities
+  intl: ^0.19.0
+  uuid: 3.0.7
+  shared_preferences: ^2.3.2
+  timezone: ^0.9.4
+  flutter_timezone: ^2.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icons/
